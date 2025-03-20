@@ -1,0 +1,209 @@
+---
+title: "Newest Collge Ranking"
+author: "Axelle Jimenez"
+date: "2024-11-13"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+setwd("~/Desktop/DS 101")
+library(readr)
+library(dplyr)
+library(tidyr)
+```
+#### STEM & Faith Forward: Best Colleges for First-Gen Latina Women
+
+When it came to my parents' views about college, they really wanted me to go to a Christian college. However, I didn't care much if the college was Christian or not, because in my head "college is college". Additionally, I knew about some Christian colleges, but some of the ones I knew didn't have a good reputation, were too expensive, and didn't offer my specific major. If there, was a perfect college that was Christian, affordable, and had my major, I would have 100% gone to that college, because these factors were also important to me.
+
+With that in mind, I created a college ranking that is more specific and tailored to students like me: first-generation, Christian, Latina, working-class females wanting to pursue an education in STEM.
+
+I hope that my ranking will be helpful for prospective students and parents looking for the perfect college for their daughter who is part of this audience.
+
+Here are the factor that the audience wants to consider:
+
+1. Christian Affiliation: The audience really wants to go to a Christian school. It's their priority.
+
+2. First Generation Completion: The audience wants confidence that their daughter will certainly graduate in four years. 
+
+3. Strong STEM programs: The parents want to make sure that their daughters are getting the best STEM education in a Christian school. 
+
+4. Earnings after College: The biggest concern the students have is if they will earn a lot of money. We need to give them confidence that the college will give them a high paying job five years after college. 
+
+5. Net Price: The parents are most likely going to have to pay for college. They need to know if college is affordable for them. 
+
+6. Financial Aid: The family probably has other children, other than this one daughter going to college. So, they're going to need financial aid to help pay for college. 
+
+7. Hispanic Women Graduation Rate: Just for motivation, the parents and students want to see the graduation rate for students like them (Hispanic). 
+
+
+### First, we need to import our data 
+
+```{r}
+Cdat <- read_csv("CollegeData25.csv")
+```
+
+Before we do any analysis, I just want to give you the heads up that I do standardize every variable that I'm using in my analysis. By standardizing, the variable will have a mean of 0 and a standard deviation of 1, which prevents us from trying to compare variables that have different units and ranges. I'm converting each variable to numeric data, even if some are already numeric. I'm doing it just in case and I honestly don't remember if the data is string or numeric, so I'll set all of it to numeric for the sake of it. 
+
+### Now we can do our ranking!
+
+1. Christian Affiliation
+The parents want to ensure that their child is attending a 'Christian' affiliated college. Their faith is priority when choosing a school.
+
+For this factor, we need to use the RELAFIL variable, which signifies the religious affiliation of the institution. To consider if a college is 'Christian', we need to pull the religious affiliation column of the data. Of course, there are several religious affiliations, but we will hope, that in our analysis, that our results will be Christian affiliated colleges. 
+
+We convert the religious affiliation variable to numeric so we can analyze the numbers. This variable is a category, so we assign numeric values to each category. Converting categorical data to numeric allows us to perform mathematical operation and standardized the variable to compare with others. 
+
+```{r}
+# convert RELAFFIL to numeric
+Cdat$RELAFFIL <- as.numeric(Cdat$RELAFFIL)
+#summary(Cdat$RELAFFIL)
+
+# standardize RELAFFIL
+Cdat$RELAFFIL_stan <- scale(Cdat$RELAFFIL)
+
+# summarize it 
+summary(Cdat$RELAFFIL_stan)
+```
+
+2. First Generation Completion
+
+First-generation students often face challenges in completing college. Parents want to ensure that their daughter will earn her degree in four years, providing hope that graduating in four years is possible and that their child won't drop out. 
+
+We need to consider two variables for this factor. First, we want to pull FIRSTGEN_COMP_ORIG_YR4_RT, which is the percent of first-generation students who completed within 4 years at the original institution. Since we want to make sure our first-generation daughter stays in college, we need to look at the percent of first-generation students (like their daughter) actually graduated. The percentage will either encourage that their daughter will do good in school based on that, or discourage, if this percentage is very low. We see a very similar scenario when looking at retention rates of first-time, full-time students at four year institutions (RET_FT4_POOLED).
+
+We convert the percentage of first-generation students who completed within 4 years and the retention rate to numeric. Converting these variables ensures they can be standardized and used in calculations. This helps in comparing the completion and retention rates across different institutions. 
+```{r}
+# convert FIRSTGEN_COMP_ORIG_YR4_RT to numeric
+Cdat$FIRSTGEN_COMP_ORIG_YR4_RT <- as.numeric(Cdat$FIRSTGEN_COMP_ORIG_YR4_RT)
+
+# standardize FIRSTGEN_COMP_ORIG_YR4_RT to numeric
+Cdat$FIRSTGEN_COMP_ORIG_YR4_RT_stan <- scale(Cdat$FIRSTGEN_COMP_ORIG_YR4_RT)
+summary(Cdat$FIRSTGEN_COMP_ORIG_YR4_RT_stan)
+
+# now, for the retention rate
+Cdat$RET_FT4_POOLED <- as.numeric(Cdat$RET_FT4_POOLED)
+Cdat$RET_FT4_POOLED_stan <- scale(Cdat$RET_FT4_POOLED)
+summary(Cdat$RET_FT4_POOLED_stan)
+```
+3. Strong STEM Programs
+
+Parents want to ensure that their daughter receives the best education in STEM degrees and that the school has a strong focus on STEM.
+
+So, we need to pull out the percentage of STEM degrees awarded at these institutions. We will use PCIP11(Percentage of degrees awarded in Computer And Information Sciences And Support), PCIP14(Percentage of degrees awarded in Engineering), PCIP26 (Percentage of degrees awarded in Biological And Biomedical Sciences), PCIP27 (Percentage of degrees awarded in Mathematics And Statistics), and PCIP40(Percentage of degrees awarded in Physical Sciences). 
+
+We convert the percentages of degrees awarded in various STEM fields to numeric and then sum them up. Summing the percentages of degrees awarded in STEM fields gives an overall measure of the institution's focus on STEM education. Converting to numeric allows for standardization and comparison. 
+```{r}
+# convert STEM fields to numeric
+Cdat$PCIP11 <- as.numeric(Cdat$PCIP11)
+Cdat$PCIP14 <- as.numeric(Cdat$PCIP14)
+Cdat$PCIP26 <- as.numeric(Cdat$PCIP26)
+Cdat$PCIP27 <- as.numeric(Cdat$PCIP27)
+Cdat$PCIP40 <- as.numeric(Cdat$PCIP40)
+
+# add up the percentages of STEM degrees
+Cdat$STEM_TOTAL <- Cdat$PCIP11 + Cdat$PCIP14 + Cdat$PCIP26 + Cdat$PCIP27 + Cdat$PCIP40
+
+
+# standardize the sum
+Cdat$STEM_TOTAL_stan <- scale(Cdat$STEM_TOTAL)
+summary(Cdat$STEM_TOTAL_stan)
+```
+
+4. Earnings After College
+
+Parents want to ensure that their daughter will earn a good salary after college. They need to know that their daughter's hard work will pay off financially five years after graduation. 
+
+To see the median earnings of graduates working five years after college, we need to pull the MD_EARN_WNE_5YR column. This column will tell us the exact information needed for this factor. 
+
+We convert the median earnings of graduates to numeric. Converting earnings data to numeric data lets us standardize it and compare the financial outcomes for graduates from different institutions.
+```{r}
+# convert MD_EARN_WNE_5YR to numeric
+Cdat$MD_EARN_WNE_5YR <- as.numeric(Cdat$MD_EARN_WNE_5YR)
+
+# standardize MD_EARN_WNE_5YR 
+Cdat$MD_EARN_WNE_5YR_stan <- scale(Cdat$MD_EARN_WNE_5YR)
+summary(Cdat$MD_EARN_WNE_5YR_stan)
+```
+
+5. Average Net Price
+
+
+For this, we need to pull out two variables, which are NPT43_PUB and NPT43_PRIV . NPT43_PUB represents the average net price for $48,001-$75,000 family income (public institutions).NPT43_PRIV  represents the same thing, but for private for-profit and nonprofit institutions. I chose this income range because the audience is not entirely poor, and they have somewhat of a decent income. 
+
+As a working-class parent, they care about the average net price of their daughter's education, whether at a public or private institution. They want to ensure that their daughter's education is affordable.
+
+I  wasn't sure how to handle this part, I had Copilot help me with this process (I'm sure I didn't do this right and that this code was unnecessary). First, it converts the columns for public and private net process to ensure they could be used in calculations. Then, it calculates the average net price by taking the mean of the public and private net prices for each institution. Then, it standardizes the average net price to ensure it was on the same scale as other variables. 
+```{r}
+# Convert NPT42_PUB and NPT43_PRIV to numeric
+Cdat$NPT43_PUB <- as.numeric(Cdat$NPT43_PUB)
+Cdat$NPT43_PRIV <- as.numeric(Cdat$NPT43_PRIV)
+
+# Calculate the average net price
+Cdat$AVG_NET_PRICE <- rowMeans(cbind(Cdat$NPT43_PUB, Cdat$NPT43_PRIV), na.rm = TRUE)
+# Standardize AVG_NET_PRICE
+Cdat$AVG_NET_PRICE_stan <- scale(Cdat$AVG_NET_PRICE)
+# Summarize it
+summary(Cdat$AVG_NET_PRICE_stan)
+
+```
+
+6. Financial Aid 
+
+Parents want to ensure that their daughter will receive financial aid in college, including loans and eligibility for federal Pell Grants. 
+
+To help give confidence to the parents that their daughter may recieve financial aid, we need to look at the Percentage of full-time, first-time degree/certificate-seeking undergraduate students awarded a Pell Grant and/or a federal loan. For the Pell Grant, we will use FTFTPCTPELL. For federal loan, we will use FTFTPCTFLOAN .
+
+So, we convert the percentages of students awarded Pell Grants and federal loads to numeric. Because we standardized it, we can compare the availability of financial aid across institutions. 
+
+```{r}
+# convert FTFTPCTPELL and FTFTPCTFLOAN to numeric
+# standardize both
+Cdat$FTFTPCTPELL <- as.numeric(Cdat$FTFTPCTPELL)
+Cdat$FTFTPCTPELL_stan <- scale(Cdat$FTFTPCTPELL)
+summary(Cdat$FTFTPCTPELL_stan)
+
+Cdat$FTFTPCTFLOAN <- as.numeric(Cdat$FTFTPCTFLOAN)
+Cdat$FTFTPCTFLOAN_stan <- scale(Cdat$FTFTPCTFLOAN)
+summary(Cdat$FTFTPCTFLOAN_stan)
+```
+
+8. Hispanic Women Graduation Rate
+The parents also want to know, juist for show, the percentage of hispanic women that graduate within four years. This will give the Hispanic students the motivation that they can do it, since other hispanic stuents have done it too. 
+
+To look at this factor, we will use  C150_4_HISP, which represents: Completion rate for first-time, full-time students at four-year institutions (150% of expected time to completion) for Hispanic student.
+
+
+Just like the other variables, we concert to numeric and standardize it, highlighting institutions where Hispanic women are successfully graduating. 
+```{r}
+# convert C150_4_HISP to numeric
+Cdat$C150_4_HISP <- as.numeric(Cdat$C150_4_HISP)
+
+#standardize C150_4_HISP 
+Cdat$C150_4_HISP_stan <- scale(Cdat$C150_4_HISP)
+summary(Cdat$C150_4_HISP_stan)
+```
+
+Creating the Algorithm
+
+
+Finally, we create the ranking algorithm with weights assigned to each factor based on their importance. In this algorithm, we'll say that the audience really cares if the college is the most important factor, and the percentage od Hispanics is least important. In other words, the order of the variables and the weights are in descending order. 
+```{r}
+# create the ranking algorithm with weights
+Cdat$RankPoints1 <- 20 * Cdat$RELAFFIL_stan + 15 * Cdat$FIRSTGEN_COMP_ORIG_YR4_RT_stan + 15 * Cdat$RET_FT4_POOLED_stan + 20 * Cdat$STEM_TOTAL_stan + 10 * Cdat$MD_EARN_WNE_5YR_stan + 10 * Cdat$AVG_NET_PRICE_stan + 5 * Cdat$FTFTPCTPELL_stan + 5 * Cdat$FTFTPCTFLOAN_stan + 10 * Cdat$C150_4_HISP_stan
+
+# remove rows with NA values
+Cdat <- drop_na(Cdat, RankPoints1)
+
+# order the dataframe by RankPoints
+Cdat <- Cdat[order(-Cdat$RankPoints1),]
+
+# Display the top 25 colleges
+Cdat$INSTNM[1:25]
+
+
+```
+This algorithm places a high emphasis on Christian affiliation, which is reflected in the top-ranked colleges. Many od the colleges listen are known for their strong Christian affiliations, such as Duke University and University of Notre Dame. This suggests that the algorithm has face validity for this audience, who prioritizes Christian affiliation. 
+
+
+
+
