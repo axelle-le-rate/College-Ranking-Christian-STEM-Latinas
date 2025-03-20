@@ -37,7 +37,7 @@ The ranking algorithm assigns weights to each factor based on its importance to 
 
 1. **Clone the repository**:  
    ```sh
-   git clone https://github.com/YourGitHubUsername/Faith-STEM-College-Rankings.git
+   git clone https://github.com/axelle-le-rate/Faith-STEM-College-Rankings.git
    
 2. **Install dependencies**:
 
