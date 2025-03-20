@@ -6,7 +6,7 @@ This project ranks the best colleges for first-generation, Christian, Latina wom
 As a first-generation Latina in STEM myself, I created this ranking to provide personalized insights for students like me and their families who value both faith and high-quality STEM education.
 
 📄 **View the Full Analysis Report:**  
-[Newest College Ranking.Rmd](Newest College Ranking.Rmd)  
+[Newest-College-Ranking.Rmd](Newest-College-Ranking.Rmd)  
 
 
 ## 🗂️ Dataset
