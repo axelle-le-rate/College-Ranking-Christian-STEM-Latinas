@@ -7,9 +7,9 @@ As a first-generation Latina in STEM myself, I created this ranking to provide p
 
 ## 🗂️ Dataset
 
-- Source: [IPEDS College Data]
+- Source: IPEDS College Data
 - Link to data: https://drive.google.com/drive/folders/1NRs2mt-IipExgAHCDlewW5vc6_2J8A2p?usp=drive_link
-- Data Size: X rows × Y columns (~Z MB)
+- Data Size: 2012 rows × 1000 columns (45.5 MB)
 - Preprocessing: Standardized all variables to compare data fairly across different metrics.
   
 ## 🏗️ Ranking Factors & Methodology
